@@ -8,6 +8,26 @@
   var prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   /* ---------------------------------------------------------
+     Twinkling stars overlay (decorative, purely visual)
+  --------------------------------------------------------- */
+  var starsField = document.getElementById('starsField');
+  if (starsField && !prefersReducedMotion) {
+    var STAR_COUNT = 32;
+    var starsHtml = '';
+    for (var s = 0; s < STAR_COUNT; s++) {
+      var size = (Math.random() * 10 + 8).toFixed(1);
+      var x = (Math.random() * 100).toFixed(1);
+      var y = (Math.random() * 100).toFixed(1);
+      var dur = (Math.random() * 2.5 + 2.5).toFixed(2);
+      var delay = (Math.random() * 5).toFixed(2);
+      var peak = (Math.random() * 0.35 + 0.55).toFixed(2);
+      starsHtml += '<span class="star" style="--size:' + size + 'px; --x:' + x + '%; --y:' + y +
+        '%; --dur:' + dur + 's; --delay:' + delay + 's; --peak:' + peak + '"></span>';
+    }
+    starsField.innerHTML = starsHtml;
+  }
+
+  /* ---------------------------------------------------------
      1. Page-load transition
   --------------------------------------------------------- */
   var loader = document.getElementById('loader');
@@ -210,6 +230,26 @@
       tag: 'Culture & Engagement',
       title: 'Year-Round Culture Activities',
       desc: "Alongside the flagship annual events, I own the internal activities calendar that connects and boosts employee experience — Mid-Autumn Festival, International Men's & Women's Day, a spring festival charity fundraiser, and the office Christmas party. My role spans ideation, key messaging, office decoration, and hosting each program as MC."
+    },
+    procurement: {
+      tag: 'Office Operations · Procurement',
+      title: 'Office Renovation & Procurement',
+      desc: "Took ownership of office operations projects such as facilities replacement, renovation, and expansion — sourcing and evaluating suitable suppliers, negotiating pricing, and managing the full purchasing process from request to delivery."
+    },
+    maintenance: {
+      tag: 'Office Operations · Maintenance',
+      title: 'Facilities Maintenance & Upkeep',
+      desc: "Cared for day-to-day office facilities, proactively flagging and proposing maintenance whenever needed — including lighting and cooling systems — to keep the workspace safe, comfortable, and fully functional."
+    },
+    payment: {
+      tag: 'Procurement · Payment & Documentation',
+      title: 'Budget & Payment Processing',
+      desc: "Responsible for the financial side of procurement — collecting and comparing quotations, confirming budgets with stakeholders, and implementing the payment process end to end for approved purchases."
+    },
+    policy: {
+      tag: 'HR Policy · Compliance',
+      title: 'Employee Handbook & Policy Refresh',
+      desc: "Led the review and rewrite of internal HR policies and the employee handbook, working with department leads to align documentation with current labor regulations and company growth."
     }
   };
 
@@ -257,7 +297,8 @@
   }
 
   var modalOverlay = document.getElementById('modalOverlay');
-  var modalImage = document.getElementById('modalImage');
+  var modalImageLayers = [document.getElementById('modalImageA'), document.getElementById('modalImageB')];
+  var activeLayer = 0;
   var modalTag = document.getElementById('modalTag');
   var modalTitle = document.getElementById('modalTitle');
   var modalDesc = document.getElementById('modalDesc');
@@ -270,16 +311,42 @@
   var currentFolder = null;
   var currentIndex = 0;
   var lastFocusedEl = null;
+  var loadToken = 0;
 
+  function clearImageLayers() {
+    loadToken++;
+    modalImageLayers.forEach(function (layer) {
+      layer.classList.remove('is-shown');
+      layer.removeAttribute('src');
+      layer.alt = '';
+    });
+  }
+
+  /* Two stacked <img> layers cross-fade between each other: the incoming
+     photo is preloaded off-screen and only swapped in once fully decoded,
+     then the outgoing layer fades out at the same time. This avoids the
+     "new photo painted over the old one" artifact WebKit/iPadOS shows when
+     a single <img>'s src is swapped mid-transition, and it removes the old
+     fixed loading delay since we're not waiting on an arbitrary timer. */
   function loadImage(index) {
     if (!currentProject) return;
     currentIndex = (index + currentProject.images.length) % currentProject.images.length;
-    modalImage.classList.remove('is-shown');
-    window.setTimeout(function () {
-      modalImage.src = 'images/' + currentFolder + '/' + currentProject.images[currentIndex];
-      modalImage.alt = currentProject.title + ' — photo ' + (currentIndex + 1);
-    }, 120);
-    modalImage.onload = function () { modalImage.classList.add('is-shown'); };
+    var src = 'images/' + currentFolder + '/' + currentProject.images[currentIndex];
+    var alt = currentProject.title + ' — photo ' + (currentIndex + 1);
+    var thisLoad = ++loadToken;
+
+    var preloader = new Image();
+    preloader.onload = preloader.onerror = function () {
+      if (thisLoad !== loadToken) return;
+      var incoming = modalImageLayers[1 - activeLayer];
+      var outgoing = modalImageLayers[activeLayer];
+      incoming.src = src;
+      incoming.alt = alt;
+      incoming.classList.add('is-shown');
+      outgoing.classList.remove('is-shown');
+      activeLayer = 1 - activeLayer;
+    };
+    preloader.src = src;
 
     galleryDots.querySelectorAll('button').forEach(function (dot, i) {
       dot.classList.toggle('is-active', i === currentIndex);
@@ -307,9 +374,7 @@
     galleryDots.style.display = hasMultiple ? 'flex' : 'none';
 
     if (!hasAny) {
-      modalImage.classList.remove('is-shown');
-      modalImage.removeAttribute('src');
-      modalImage.alt = '';
+      clearImageLayers();
       return;
     }
 
@@ -335,7 +400,7 @@
     if (data.images) {
       showGallery(data);
     } else {
-      modalImage.classList.remove('is-shown');
+      clearImageLayers();
       autoDetectImages(keyFolder, keyProject + '-').then(function (images) {
         data.images = images;
         showGallery(data);
