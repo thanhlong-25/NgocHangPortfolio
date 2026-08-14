@@ -110,7 +110,6 @@ svg { display: block; }
   letter-spacing: -0.01em;
 }
 .section-sub {
-  max-width: 560px;
   color: var(--ink-soft);
   font-size: 1.05rem;
   margin-top: 16px;
@@ -271,7 +270,7 @@ svg { display: block; }
   min-height: 60vh;
   display: flex;
   align-items: center;
-  padding-top: 120px;
+  padding-top: 90px;
   overflow: hidden;
 }
 .hero-blob {
@@ -346,7 +345,7 @@ body.is-loaded .split-word { opacity: 1; transform: translateY(0); }
 .hero-subtitle {
   font-size: 1.15rem;
   color: var(--ink-soft);
-  max-width: 480px;
+  max-width: 500px;
   margin-bottom: 34px;
   opacity: 0;
   transform: translateY(22px);
@@ -419,7 +418,7 @@ body.is-loaded .hero-visual { opacity: 1; transform: translateY(0) scale(1); }
 .stats-grid [data-reveal]:nth-child(4) { transition-delay: .3s; }
 
 /* ============ About ============ */
-.about { padding: 160px 0 0; position: relative; }
+.about { padding: 60px 0 0; position: relative; }
 .about-grid {
   display: grid;
   grid-template-columns: 0.85fr 1.15fr;
@@ -427,9 +426,9 @@ body.is-loaded .hero-visual { opacity: 1; transform: translateY(0) scale(1); }
   align-items: center;
 }
 .about-visual { align-self: end; }
-.photo-collage { position: relative; max-width: 380px; }
+.photo-collage { position: relative; max-width: 460px; }
 .collage-blob {
-  position: absolute; inset: -6% -10%;
+  position: absolute; inset: -2% -3%;
   background: linear-gradient(160deg, var(--blush-alt), var(--rose-light) 0%);
   border-radius: 5% 5% 0 0;
   z-index: 0;
@@ -440,8 +439,7 @@ body.is-loaded .hero-visual { opacity: 1; transform: translateY(0) scale(1); }
   filter: drop-shadow(0 18px 22px rgba(78,36,52,0.38));
 }
 
-.about-copy p { color: var(--ink-soft); font-size: 1.05rem; margin-top: 18px; }
-.about-copy p:first-of-type { margin-top: 18px; }
+.about-copy p:not(.eyebrow) { color: var(--ink-soft); font-size: 1.05rem; margin-top: 18px; }
 .fact-pills { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 30px; }
 .fact-pills li {
   font-size: 0.86rem;
@@ -452,12 +450,15 @@ body.is-loaded .hero-visual { opacity: 1; transform: translateY(0) scale(1); }
   border-radius: 999px;
 }
 
-/* ============ Experience ============ */
+/* ============ Education & Experience ============ */
 .experience {
-  padding: 140px 0 0;
+  padding: 56px 0 0;
   background: linear-gradient(175deg, var(--blush-alt) 60%, var(--rose-light) 130%);
   position: relative;
   overflow: hidden;
+}
+#experience.experience {
+  background: linear-gradient(200deg, var(--rose-light) 55%, var(--blush) 130%);
 }
 .experience-blob {
   position: absolute;
@@ -469,20 +470,29 @@ body.is-loaded .hero-visual { opacity: 1; transform: translateY(0) scale(1); }
 .experience-blob--a {
   width: 460px; height: 460px;
   left: -160px; top: -80px;
-  background: linear-gradient(140deg, var(--rose-strong), var(--rose-deep) 80%);
+  background: linear-gradient(140deg, var(--rose-light), var(--peach) 80%);
   border-radius: 55% 45% 60% 40% / 40% 55% 45% 60%;
 }
 .experience-blob--b {
   width: 260px; height: 260px;
   right: -80px; bottom: 60px;
-  background: linear-gradient(140deg, var(--peach), var(--rose) 80%);
+  background: linear-gradient(140deg, var(--peach), var(--rose-light) 80%);
   border-radius: 40% 60% 45% 55% / 55% 40% 60% 45%;
   animation-delay: -7s;
+}
+#experience .experience-blob--a {
+  left: auto; right: -140px; top: auto; bottom: -100px;
+  background: linear-gradient(140deg, var(--peach), var(--rose) 75%);
+  border-radius: 60% 40% 45% 55% / 55% 45% 60% 40%;
+}
+#experience .experience-blob--b {
+  right: auto; left: -80px; bottom: auto; top: 40px;
+  background: linear-gradient(140deg, var(--rose-light), var(--blush) 80%);
 }
 .experience-dot {
   position: absolute;
   border-radius: 50%;
-  background: var(--rose-strong);
+  background: var(--rose);
   opacity: 0.4;
   z-index: 0;
   animation: float 10s ease-in-out infinite;
@@ -492,23 +502,23 @@ body.is-loaded .hero-visual { opacity: 1; transform: translateY(0) scale(1); }
 .experience > .container { position: relative; z-index: 1; }
 .experience-grid {
   display: grid;
-  grid-template-columns: 1.55fr 0.95fr;
-  gap: 56px;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 48px;
   align-items: center;
 }
-.experience-content {
-  display: grid;
-  grid-template-columns: 0.9fr 1.1fr;
-  gap: 48px;
-}
-.experience-visual { display: flex; justify-content: center; align-self: end; }
-.experience-photo-wrap { position: relative; width: min(410px, 82vw); }
+#experience .experience-grid { grid-template-columns: 1fr 1.5fr; }
+.experience-visual { display: flex; align-self: end; }
+.experience-photo-wrap { position: relative; width: 100%; max-width: 460px; }
 .experience-photo-blob {
   position: absolute;
-  inset: -8% -12%;
-  background: linear-gradient(155deg, var(--rose-deep), var(--rose-strong) 75%);
+  inset: -3% -5%;
+  background: linear-gradient(155deg, var(--rose), var(--rose-light) 80%);
   border-radius: 30% 70% 65% 35% / 40% 35% 65% 60%;
   z-index: 0;
+}
+#experience .experience-photo-blob {
+  background: linear-gradient(155deg, var(--peach), var(--rose-light) 80%);
+  border-radius: 65% 35% 30% 70% / 55% 45% 55% 45%;
 }
 .experience-photo {
   position: relative; z-index: 1;
@@ -529,6 +539,7 @@ body.is-loaded .hero-visual { opacity: 1; transform: translateY(0) scale(1); }
   box-shadow: var(--shadow-soft);
   animation: float 9s ease-in-out infinite;
 }
+#experience .experience-chip { right: auto; left: -12%; }
 .education-card {
   background: var(--cream-card);
   border-radius: var(--radius-lg);
@@ -591,7 +602,7 @@ body.is-loaded .hero-visual { opacity: 1; transform: translateY(0) scale(1); }
 .timeline-org { color: var(--ink-soft); margin-top: 2px; }
 
 /* ============ Projects ============ */
-.projects { padding: 140px 0; }
+.projects { padding: 90px 0; }
 
 .project-group + .project-group { margin-top: 88px; }
 .project-group-head {
@@ -651,6 +662,7 @@ body.is-loaded .hero-visual { opacity: 1; transform: translateY(0) scale(1); }
 .card-hr1 .project-media, .card-hr4 .project-media { aspect-ratio: 16/9; }
 .card-yep .project-media, .card-badminton .project-media,
 .card-hr2 .project-media, .card-hr3 .project-media { aspect-ratio: 4/3; }
+.card-trip .project-media { aspect-ratio: 6293/2787; }
 .project-media img {
   width: 100%; height: 100%; object-fit: cover;
   transition: transform .7s var(--ease);
@@ -686,7 +698,7 @@ body.is-loaded .hero-visual { opacity: 1; transform: translateY(0) scale(1); }
 /* ============ Stats band ============ */
 .stats {
   background: linear-gradient(120deg, var(--rose-deep), var(--rose-deep-2));
-  padding: 88px 0;
+  padding: 64px 0;
   position: relative;
 }
 .stats-grid {
@@ -709,7 +721,7 @@ body.is-loaded .hero-visual { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 /* ============ Contact ============ */
-.contact { padding: 80px 0; position: relative; overflow: hidden; }
+.contact { padding: 60px 0; position: relative; overflow: hidden; }
 .contact-blob {
   position: absolute; right: -160px; top: -120px;
   width: 480px; height: 480px;
@@ -876,10 +888,9 @@ body.is-loaded .hero-visual { opacity: 1; transform: translateY(0) scale(1); }
   .about-grid, .experience-grid, .contact-grid { grid-template-columns: 1fr; }
   .about-visual { order: -1; margin: 0 auto; align-self: auto; }
   .photo-collage { margin: 0 auto 20px; }
-  .about, .experience { padding-bottom: 100px; }
+  .about, .experience { padding-bottom: 70px; }
   .experience-visual { order: -1; margin-bottom: 20px; align-self: auto; }
   .experience-photo-wrap { margin: 0 auto; }
-  .experience-content { grid-template-columns: 1fr; gap: 40px; }
   .hero-grid { grid-template-columns: 1fr; text-align: center; }
   .hero-copy { order: 1; }
   .hero-visual { order: 0; margin-bottom: 20px; }
@@ -913,7 +924,7 @@ body.is-loaded .hero-visual { opacity: 1; transform: translateY(0) scale(1); }
 
 @media (max-width: 640px) {
   .container { padding: 0 22px; }
-  .about, .experience, .projects, .contact { padding: 90px 0; }
+  .about, .experience, .projects, .contact { padding: 64px 0; }
   .education-card { padding: 28px 24px; }
   .modal-body { padding: 26px 22px 30px; }
   .modal-image-frame { height: 46vh; }
