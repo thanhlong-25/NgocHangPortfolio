@@ -458,7 +458,62 @@
   })();
 
   /* ---------------------------------------------------------
+     Background gallery preloader — after the page has settled,
+     quietly walks every project's gallery using
+     requestIdleCallback so it only runs when the browser has
+     spare time, never competing with scrolling or interaction.
+     Each project is detected and preloaded one image at a time
+     (never in parallel), and the result is cached onto
+     PROJECTS[key].images — the same cache the modal already
+     checks — so opening a project later skips detection
+     entirely and shows already-cached photos instantly.
+  --------------------------------------------------------- */
+  var idleCallback = window.requestIdleCallback || function (cb) {
+    return window.setTimeout(function () {
+      cb({ didTimeout: false, timeRemaining: function () { return 50; } });
+    }, 300);
+  };
+
+  function preloadImageList(folder, images) {
+    return images.reduce(function (chain, filename) {
+      return chain.then(function () {
+        return new Promise(function (resolve) {
+          idleCallback(function () {
+            var img = new Image();
+            img.onload = img.onerror = resolve;
+            img.src = 'images/' + folder + '/' + filename;
+          });
+        });
+      });
+    }, Promise.resolve());
+  }
+
+  function preloadProjectGallery(folder, projectKey) {
+    var data = PROJECTS[projectKey];
+    if (!data) return Promise.resolve();
+    if (data.images) return preloadImageList(folder, data.images);
+    return autoDetectImages(folder, projectKey + '-').then(function (images) {
+      data.images = images;
+      return preloadImageList(folder, images);
+    });
+  }
+
+  function preloadAllGalleriesInBackground() {
+    var queue = [];
+    document.querySelectorAll('.project-card').forEach(function (card) {
+      var folder = card.getAttribute('data-folder');
+      var projectKey = card.getAttribute('data-project');
+      if (folder && projectKey) queue.push({ folder: folder, projectKey: projectKey });
+    });
+
+    queue.reduce(function (chain, item) {
+      return chain.then(function () { return preloadProjectGallery(item.folder, item.projectKey); });
+    }, Promise.resolve());
+  }
+
+  /* ---------------------------------------------------------
      Init
   --------------------------------------------------------- */
   onScroll();
+  idleCallback(preloadAllGalleriesInBackground);
 })();
