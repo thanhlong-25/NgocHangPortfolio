@@ -311,6 +311,7 @@
 
   function clearImageLayers() {
     loadToken++;
+    activeLayer = 0;
     modalImageLayers.forEach(function (layer) {
       layer.classList.remove('is-shown');
       layer.removeAttribute('src');
@@ -318,12 +319,13 @@
     });
   }
 
-  /* Two stacked <img> layers cross-fade between each other: the incoming
-     photo is preloaded off-screen and only swapped in once fully decoded,
-     then the outgoing layer fades out at the same time. This avoids the
-     "new photo painted over the old one" artifact WebKit/iPadOS shows when
-     a single <img>'s src is swapped mid-transition, and it removes the old
-     fixed loading delay since we're not waiting on an arbitrary timer. */
+  /* Two stacked <img> layers cross-fade between each other. The incoming
+     layer loads the new photo directly, then — critically — waits for
+     img.decode() to resolve before revealing it. Reused layers (e.g. layer
+     A held photo #1, gets reused for photo #3) still have their OLD bitmap
+     painted until decode() confirms the NEW one is ready, so gating the
+     opacity fade on decode() (rather than on a separate off-DOM preloader)
+     guarantees the layer never flashes its stale frame mid-transition. */
   function loadImage(index) {
     if (!currentProject) return;
     currentIndex = (index + currentProject.images.length) % currentProject.images.length;
@@ -333,19 +335,31 @@
 
     modalLoader.classList.add('is-visible');
 
-    var preloader = new Image();
-    preloader.onload = preloader.onerror = function () {
+    var incoming = modalImageLayers[1 - activeLayer];
+    var outgoing = modalImageLayers[activeLayer];
+
+    function reveal() {
       if (thisLoad !== loadToken) return;
       modalLoader.classList.remove('is-visible');
-      var incoming = modalImageLayers[1 - activeLayer];
-      var outgoing = modalImageLayers[activeLayer];
-      incoming.src = src;
-      incoming.alt = alt;
       incoming.classList.add('is-shown');
       outgoing.classList.remove('is-shown');
       activeLayer = 1 - activeLayer;
+    }
+
+    incoming.onload = function () {
+      if (thisLoad !== loadToken) return;
+      if (incoming.decode) {
+        incoming.decode().then(reveal, reveal);
+      } else {
+        reveal();
+      }
     };
-    preloader.src = src;
+    incoming.onerror = function () {
+      if (thisLoad !== loadToken) return;
+      reveal();
+    };
+    incoming.alt = alt;
+    incoming.src = src;
 
     galleryDots.querySelectorAll('button').forEach(function (dot, i) {
       dot.classList.toggle('is-active', i === currentIndex);
@@ -397,10 +411,11 @@
     document.documentElement.classList.add('no-scroll');
     modalClose.focus();
 
+    clearImageLayers();
+
     if (data.images) {
       showGallery(data);
     } else {
-      clearImageLayers();
       modalLoader.classList.add('is-visible');
       autoDetectImages(keyFolder, keyProject + '-').then(function (images) {
         data.images = images;

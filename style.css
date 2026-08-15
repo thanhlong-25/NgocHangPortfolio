@@ -152,8 +152,10 @@ svg { display: block; }
 }
 .loader-badge {
   font-family: var(--font-display);
-  font-style: italic;
-  font-size: 2.4rem;
+  font-style: normal;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  font-size: 2.3rem;
   color: var(--blush);
   opacity: 0.9;
   transform: scale(0.7);
