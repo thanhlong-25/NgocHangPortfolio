@@ -236,11 +236,6 @@
       title: 'Office Renovation & Procurement',
       desc: "Took ownership of office operations projects such as facilities replacement, renovation, and expansion — sourcing and evaluating suitable suppliers, negotiating pricing, and managing the full purchasing process from request to delivery."
     },
-    maintenance: {
-      tag: 'Office Operations · Maintenance',
-      title: 'Facilities Maintenance & Upkeep',
-      desc: "Cared for day-to-day office facilities, proactively flagging and proposing maintenance whenever needed — including lighting and cooling systems — to keep the workspace safe, comfortable, and fully functional."
-    },
     payment: {
       tag: 'Procurement · Payment & Documentation',
       title: 'Budget & Payment Processing',
