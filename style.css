@@ -848,6 +848,23 @@ body.is-loaded .hero-visual { opacity: 1; transform: translateY(0) scale(1); }
 }
 .modal-image.is-shown { opacity: 1; z-index: 1; }
 
+.modal-loader {
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 38px; height: 38px;
+  margin: -19px 0 0 -19px;
+  border: 3px solid rgba(78,36,52,0.15);
+  border-top-color: var(--rose-deep);
+  border-radius: 50%;
+  z-index: 2;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .25s ease;
+  animation: modal-spin .8s linear infinite;
+}
+.modal-loader.is-visible { opacity: 1; }
+@keyframes modal-spin { to { transform: rotate(360deg); } }
+
 .gallery-arrow {
   position: absolute; top: 50%; transform: translateY(-50%);
   width: 44px; height: 44px; border-radius: 50%;

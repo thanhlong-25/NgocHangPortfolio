@@ -301,6 +301,7 @@
   var galleryPrev = document.getElementById('galleryPrev');
   var galleryNext = document.getElementById('galleryNext');
   var galleryDots = document.getElementById('galleryDots');
+  var modalLoader = document.getElementById('modalLoader');
 
   var currentProject = null;
   var currentFolder = null;
@@ -330,9 +331,12 @@
     var alt = currentProject.title + ' — photo ' + (currentIndex + 1);
     var thisLoad = ++loadToken;
 
+    modalLoader.classList.add('is-visible');
+
     var preloader = new Image();
     preloader.onload = preloader.onerror = function () {
       if (thisLoad !== loadToken) return;
+      modalLoader.classList.remove('is-visible');
       var incoming = modalImageLayers[1 - activeLayer];
       var outgoing = modalImageLayers[activeLayer];
       incoming.src = src;
@@ -370,6 +374,7 @@
 
     if (!hasAny) {
       clearImageLayers();
+      modalLoader.classList.remove('is-visible');
       return;
     }
 
@@ -396,6 +401,7 @@
       showGallery(data);
     } else {
       clearImageLayers();
+      modalLoader.classList.add('is-visible');
       autoDetectImages(keyFolder, keyProject + '-').then(function (images) {
         data.images = images;
         showGallery(data);
