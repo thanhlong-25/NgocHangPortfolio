@@ -780,7 +780,7 @@ body.is-loaded .hero-visual { opacity: 1; transform: translateY(0) scale(1); }
 .circle-svg path { stroke: var(--rose-strong); stroke-width: 3; }
 .contact-sub { color: var(--ink-soft); font-size: 1.08rem; margin-top: 20px; max-width: 420px; }
 
-.contact-info { display: flex; flex-direction: column; gap: 18px; }
+.contact-info { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px; }
 .contact-item {
   display: flex; align-items: center; gap: 18px;
   background: var(--cream-card);
